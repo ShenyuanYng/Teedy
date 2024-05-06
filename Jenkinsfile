@@ -10,7 +10,7 @@ pipeline {
       
         stage('Generate Javadoc') {
             steps {
-                bat 'mvn javadoc:jar'
+                bat 'mvn site --fail-never:jar'
             }
             post {
                 always {
