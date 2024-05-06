@@ -3,24 +3,31 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'mvn -B clean package'
+                bat 'mvn -B -DskipTests clean package'
             }
         }
-     
-      
-        stage('Generate Javadoc') {
+        stage(' Test report') {
             steps {
-                bat 'mvn site --fail-never:jar'
+                // 添加测试到你的 Pipeline
+                bat 'mvn test'
             }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'target/site/apidocs/**', fingerprint: true
-                }
+        }
+        stage('pmd') {
+            steps {
+                bat 'mvn pmd:pmd'
             }
+        }
+        stage('Doc') {
+            steps {
+                // 生成 Javadoc 并作为构件保存
+                bat 'mvn javadoc:jar --fail-never'
+            }
+        
         }
     }
     post {
         always {
+            archiveArtifacts artifacts: '**/target/site/**', fingerprint: true
             archiveArtifacts artifacts: '**/target/**/*.jar', fingerprint: true
             archiveArtifacts artifacts: '**/target/**/*.war', fingerprint: true
         }
