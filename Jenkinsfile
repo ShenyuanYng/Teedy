@@ -3,7 +3,7 @@
  stages {
  stage('Build') { 
 steps {
- bat 'mvn clean package -DskipTests' 
+ bat 'mvn -B -DskipTests clean package' 
 }
  }
  stage('K8s') {
